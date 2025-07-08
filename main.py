@@ -2,8 +2,9 @@ import pyttsx3
 import speech_recognition as sr
 import random
 import webbrowser
-import datetime
-
+import datetime 
+from plyer import notification
+import pyautogui
 
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
@@ -53,6 +54,61 @@ def main_process():
         elif "say time" in request:
             now_time = datetime.datetime.now().strftime("%H:%M")
             speak("current time is " + str(now_time))
+        elif "say date" in request:
+            now_date = datetime.datetime.now().strftime("%d/%m/%y")
+            speak("current date is " + str(now_date))
+        elif "new task" in request:
+            task = request.replace("new task" , "")
+            task = task.strip()
+            if task != "":
+                speak("Adding task : "+ task)
+                with open ("todo.txt" , "a") as file:
+                    file.write(task + "\n")
+        elif "remove task" in request:
+            task_to_remove = request.replace("remove task", "").strip()
+            if task_to_remove == "":
+                speak("Please specify the task you want to remove.")
+                return
+            try:
+                with open("todo.txt", "r") as file:
+                    tasks = file.readlines()
+                tasks = [task for task in tasks if task.strip() != task_to_remove]
+
+                with open("todo.txt", "w") as file:
+                    file.writelines(tasks)
+                speak(f"Removed task: {task_to_remove}")
+            except FileNotFoundError:
+                speak("To-do list file not found.")
+        elif "speak task" in request:
+            with open ("todo.txt" , "r") as file:
+                speak("Work we have to do today is : " + file.read())
+        elif "show work" in request:
+            with open ("todo.txt" , "r") as file:
+                tasks = file.read()
+            notification.notify(
+                title = "today's work",
+                message = tasks
+            )
+        elif "open" in request:
+            query = request.replace("open" , "")
+            pyautogui.press("super")
+            pyautogui.typewrite(query)
+            pyautogui.sleep(0.5)
+            pyautogui.press("enter")
+        elif "take a screenshot" in request.lower():
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            filename = f"screenshot_{timestamp}.png"
+            try:
+                screenshot = pyautogui.screenshot()
+                screenshot.save(filename)
+                speak("Screenshot taken and saved in this folder")
+            except Exception as e:
+                speak("Failed to take screenshot.")
+                print("Error:", e)
+
+            
+
+
 
 
 main_process()
