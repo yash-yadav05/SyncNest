@@ -5,6 +5,7 @@ import webbrowser
 import datetime 
 from plyer import notification
 import pyautogui
+import wikipedia
 
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
@@ -89,6 +90,21 @@ def main_process():
                 title = "today's work",
                 message = tasks
             )
+        elif "open youtube" in request:
+            speak("Opening Youtube")
+            webbrowser.open("www.youtube.com")
+        elif "open instagram" in request:
+            speak("Opening instagram")
+            webbrowser.open("www.instagram.com")
+        elif "open snapchat" in request:
+            speak("Opening snapchat")
+            webbrowser.open("www.snapchat.com")
+        elif "open google" in request:
+            speak("Opening google")
+            webbrowser.open("www.google.com")
+        elif "open amazon" in request:
+            speak("Opening amazon")
+            webbrowser.open("www.amazon.com")
         elif "open" in request:
             query = request.replace("open" , "")
             pyautogui.press("super")
@@ -105,6 +121,18 @@ def main_process():
             except Exception as e:
                 speak("Failed to take screenshot.")
                 print("Error:", e)
+        elif "wikipedia" in request:
+            request = request.replace("jarvis" , "")
+            request = request.replace("search wikipedia" , "")
+            result = wikipedia.summary(request, sentences=3)
+            print(result)
+            speak(result)
+        elif "google" in request:
+            request = request.replace("jarvis" , "")
+            request = request.replace("search google" , "")
+            speak("searching " + request)
+            webbrowser.open("https://www.google.com/search?q=" + request)
+        
 
             
 
