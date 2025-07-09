@@ -12,7 +12,7 @@ from openai import OpenAI
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
-engine.setProperty('rate', 190)
+engine.setProperty('rate', 170)
 
 
 def speak(audio):
@@ -152,6 +152,22 @@ def main_process():
                 size="1024x1024"
             )
             webbrowser.open(img.data[0].url)
+        elif "chat" in request or "talk" in request or "say" in request:
+            user_msg = request.replace("jarvis", "").replace("talk", "").replace("say", "").replace("chat" , "").strip()
+            print("Showing result : ")
+            resp = client.chat.completions.create(
+                model="provider-6/gemini-2.5-flash-thinking",
+                messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": user_msg}
+                ],
+                    stream=False
+                )
+            result = resp.choices[0].message.content
+            print("Assistant:" , result)
+            speak(result)
+        
+
 
 
 main_process()
