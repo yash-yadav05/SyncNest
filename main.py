@@ -6,6 +6,8 @@ import datetime
 from plyer import notification
 import pyautogui
 import wikipedia
+import os
+from openai import OpenAI
 
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
@@ -32,6 +34,11 @@ def command():
             print("Please try again....😊")
 
     return content
+
+client = OpenAI(
+    base_url="https://api.a4f.co/v1",
+    api_key="ddc-a4f-bc9c0045f80442948dc64deab05f5650"
+)
 
 def main_process():
     while True:
@@ -132,11 +139,19 @@ def main_process():
             request = request.replace("search google" , "")
             speak("searching " + request)
             webbrowser.open("https://www.google.com/search?q=" + request)
-        
-
-            
-
-
+        elif "create an image" in request:
+            request = request.replace("jarvis" , "")
+            prompt_1 = request
+            print("Creating image please wait.....")
+            speak("Creating image please wait")
+            img = client.images.generate(
+                model="provider-3/FLUX.1-dev",
+                prompt=prompt_1,
+                n=1,
+                response_format="url",
+                size="1024x1024"
+            )
+            webbrowser.open(img.data[0].url)
 
 
 main_process()
