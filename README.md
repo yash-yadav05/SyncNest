@@ -7,3 +7,4 @@ installed pyautogui library
 installed pyscreeze library
 installed Pillow library
 installed wikipedia library
+installed openai library
